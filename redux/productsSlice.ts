@@ -1,4 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { AppDispatch } from "./store";
+import { fetchProductsFromApi } from "../api/productsAPI";
 
 type Rating = {
     rate: string;
@@ -45,3 +47,16 @@ const productsSlice = createSlice({
 
 export const { setProducts, setIsLoading, setError } = productsSlice.actions;
 export default productsSlice.reducer;
+
+export const fetchProducts = (token: string) => async (dispatch: AppDispatch) => {
+    dispatch(setIsLoading(true));
+
+    try {
+        const data = await fetchProductsFromApi(token);
+        dispatch(setProducts(data));
+    } catch (error: any) {
+        dispatch(setError(error.message));
+    } finally {
+        dispatch(setIsLoading(false));
+    }
+};

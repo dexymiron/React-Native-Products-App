@@ -7,36 +7,29 @@ import {
   Margins,
 } from "../../constants/tokens";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import { AppDispatch, RootState } from "../../redux/store";
 import { useEffect, useState } from "react";
 import Item from "../../components/Item/Item";
 import LogOutButton from "../../components/Button/LogOutButton";
-import { setIsLoading } from "../../redux/authSlice";
-import { fetchProducts } from "../../api/productsAPI";
+import { fetchProducts } from "../../redux/productsSlice";
 
 export default function Products() {
   const token = useSelector((state: RootState) => state.auth.token);
   const loading = useSelector((state: RootState) => state.products.isLoading);
   const products = useSelector((state: RootState) => state.products.items);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const [numColumns, setNumColumns] = useState(2);
 
   useEffect(() => {
     if (token) {
-      fetchProducts(token, dispatch);
+      dispatch(fetchProducts(token));
     }
   }, [token]);
 
-  useEffect(() => {
-    if (token && loading) {
-      fetchProducts(token, dispatch);
-    }
-  }, [loading]);
-
   const handleRefresh = () => {
     if (token) {
-      dispatch(setIsLoading(true));
+      dispatch(fetchProducts(token));
     }
   };
 

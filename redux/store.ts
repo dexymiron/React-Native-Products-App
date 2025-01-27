@@ -7,6 +7,7 @@ export const store = configureStore({
         auth: authReducer,
         products: productsReducer,
     },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware()
 });
 
 export type RootState = ReturnType<typeof store.getState>;
