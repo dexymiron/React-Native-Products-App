@@ -1,11 +1,10 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppDispatch } from "./store";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { fetchProductsFromApi } from "../api/productsAPI";
 
 type Rating = {
     rate: string;
-    count: string
-}
+    count: string;
+};
 
 type Product = {
     id: string;
@@ -14,14 +13,14 @@ type Product = {
     price: string;
     description: string;
     category?: string;
-    rating: Rating
-}
+    rating: Rating;
+};
 
 type ProductsState = {
     items: Product[];
     isLoading: boolean;
     error: string | null;
-}
+};
 
 const initialState: ProductsState = {
     items: [],
@@ -29,34 +28,38 @@ const initialState: ProductsState = {
     error: null,
 };
 
+export const fetchProducts = createAsyncThunk<Product[], string>(
+    "products/fetchProducts",
+    async (token, { rejectWithValue }) => {
+        try {
+            const data = await fetchProductsFromApi(token);
+            return data;
+        } catch (error: any) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
 const productsSlice = createSlice({
     name: "products",
     initialState,
     reducers: {
-        setProducts(state, action: PayloadAction<Product[]>) {
-            state.items = action.payload;
-        },
-        setIsLoading(state, action: PayloadAction<boolean>) {
-            state.isLoading = action.payload;
-        },
-        setError(state, action: PayloadAction<string | null>) {
-            state.error = action.payload;
-        },
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetchProducts.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(fetchProducts.fulfilled, (state, action: PayloadAction<Product[]>) => {
+                state.isLoading = false;
+                state.items = action.payload;
+            })
+            .addCase(fetchProducts.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string | null;
+            });
     },
 });
 
-export const { setProducts, setIsLoading, setError } = productsSlice.actions;
 export default productsSlice.reducer;
-
-export const fetchProducts = (token: string) => async (dispatch: AppDispatch) => {
-    dispatch(setIsLoading(true));
-
-    try {
-        const data = await fetchProductsFromApi(token);
-        dispatch(setProducts(data));
-    } catch (error: any) {
-        dispatch(setError(error.message));
-    } finally {
-        dispatch(setIsLoading(false));
-    }
-};

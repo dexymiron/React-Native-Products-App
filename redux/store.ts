@@ -1,5 +1,5 @@
-import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './authSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "./authSlice";
 import productsReducer from "./productsSlice";
 
 export const store = configureStore({
@@ -7,7 +7,7 @@ export const store = configureStore({
         auth: authReducer,
         products: productsReducer,
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware()
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
