@@ -21,11 +21,11 @@ Make sure you have the following installed:
 ### Installation
 
 1. Clone the repository:
-   git clone
-   cd
-
-2. Install dependencies:
+   git clone https://github.com/dexymiron/React-Native-Products-App.git
+   cd React-Native-Products-App
+   
+3. Install dependencies:
    npm install
 
-3. Start the development server:
+4. Start the development server:
    npx expo start
