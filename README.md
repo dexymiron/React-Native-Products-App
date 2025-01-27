@@ -8,8 +8,8 @@ A mobile application built with React Native that allows users to log in, view a
 2. Navigate to the protected products page after successful login.
 
 User account:
-username: mor*2314,
-password: 83r5^*
+username: mor_2314,
+password: 83r5^_
 
 ## Getting Started
 
