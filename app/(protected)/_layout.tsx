@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useRouter } from "expo-router";
-import { Colors, Paddings } from "../../constants/tokens";
+import { Paddings } from "../../constants/tokens";
 
 export default function ProtectedLayout() {
   const token = useSelector((state: RootState) => state.auth.token);
@@ -23,7 +23,7 @@ export default function ProtectedLayout() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.content}>
         <Slot />
       </SafeAreaView>
     </SafeAreaProvider>
@@ -33,7 +33,10 @@ export default function ProtectedLayout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  content: {
+    flex: 1,
     paddingHorizontal: Paddings.p10,
-    backgroundColor: Colors.brown,
+    //backgroundColor: Colors.brown,
   },
 });

@@ -1,5 +1,5 @@
 import { Slot, SplashScreen } from "expo-router";
-import { StyleSheet } from "react-native";
+import { Pressable, StyleSheet, Switch, Text } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { Provider, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
@@ -7,13 +7,17 @@ import { useFonts } from "expo-font";
 import { getTokenFromStorage } from "../asyncstorage/authStorage";
 import { store } from "../redux/store";
 import { setIsLoading, setToken } from "../redux/authSlice";
+import ThemeProvider, { useTheme } from "../components/Theme/ThemeContext";
+import { BorderRadius, Colors, Height, Margins } from "../constants/tokens";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   return (
     <Provider store={store}>
-      <RootLayoutContent />
+      <ThemeProvider>
+        <RootLayoutContent />
+      </ThemeProvider>
     </Provider>
   );
 }
@@ -25,6 +29,7 @@ function RootLayoutContent() {
     GabaritoBold: require("../assets/fonts/Gabarito-Bold.ttf"),
   });
   const dispatch = useDispatch();
+  const { isEnabled, theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     if (fontsError) {
@@ -58,6 +63,34 @@ function RootLayoutContent() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
+        <Pressable
+          onPress={toggleTheme}
+          style={[
+            styles.button,
+            {
+              backgroundColor:
+                theme === "light" ? Colors.halfyellow : Colors.brown,
+            },
+          ]}
+        >
+          <Text
+            style={[
+              styles.btnText,
+              { color: theme === "light" ? Colors.white : Colors.halfWhite },
+            ]}
+          >
+            Change Theme
+          </Text>
+        </Pressable>
+
+        <Switch
+          trackColor={{ false: "#767577", true: "#81b0ff" }}
+          thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={toggleTheme}
+          value={isEnabled}
+        />
+
         <Slot />
       </SafeAreaView>
     </SafeAreaProvider>
@@ -66,4 +99,18 @@ function RootLayoutContent() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  button: {
+    bottom: Margins.m0,
+    marginVertical: Margins.m10,
+    alignSelf: "center",
+    width: "95%",
+    height: Height.h49,
+    alignItems: "center",
+    justifyContent: "center",
+    //backgroundColor: Colors.halfyellow,
+    borderRadius: BorderRadius.br4,
+  },
+  btnText: {
+    fontSize: 16,
+  },
 });
