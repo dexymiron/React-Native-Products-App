@@ -1,5 +1,5 @@
-import { Slot, SplashScreen } from "expo-router";
-import { Pressable, StyleSheet, Switch, Text } from "react-native";
+import { Slot, SplashScreen, useRouter } from "expo-router";
+import { Button, Pressable, StyleSheet, Switch, Text } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { Provider, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
@@ -7,17 +7,21 @@ import { useFonts } from "expo-font";
 import { getTokenFromStorage } from "../asyncstorage/authStorage";
 import { store } from "../redux/store";
 import { setIsLoading, setToken } from "../redux/authSlice";
-import ThemeProvider, { useTheme } from "../components/Theme/ThemeContext";
 import { BorderRadius, Colors, Height, Margins } from "../constants/tokens";
+import AuthProvider from "../ContextAPI/AuthContext/AuthProvider";
+import { useTheme } from "../hooksCustom/useTheme";
+import ThemeProvider from "../ContextAPI/ThemeContext/ThemeProvider";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   return (
     <Provider store={store}>
-      <ThemeProvider>
-        <RootLayoutContent />
-      </ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider>
+          <RootLayoutContent />
+        </ThemeProvider>
+      </AuthProvider>
     </Provider>
   );
 }
@@ -30,6 +34,7 @@ function RootLayoutContent() {
   });
   const dispatch = useDispatch();
   const { isEnabled, theme, toggleTheme } = useTheme();
+  const router = useRouter();
 
   useEffect(() => {
     if (fontsError) {
@@ -63,6 +68,7 @@ function RootLayoutContent() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
+        <Button title="testPage =>" onPress={() => router.push("/test")} />
         <Pressable
           onPress={toggleTheme}
           style={[

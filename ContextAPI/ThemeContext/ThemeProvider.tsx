@@ -1,24 +1,7 @@
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useColorScheme, View } from "react-native";
+import { ThemeContext } from "./ThemeContext";
 import { Colors } from "../../constants/tokens";
-
-interface ThemeContextType {
-  theme: string;
-  toggleTheme: () => void;
-  isEnabled: boolean;
-}
-
-export const ThemeContext = createContext<ThemeContextType>({
-  theme: "dark",
-  toggleTheme: () => {},
-  isEnabled: false,
-});
 
 interface ThemeProviderProps {
   children: ReactNode;
@@ -28,7 +11,7 @@ const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const systemTheme = useColorScheme();
 
   const [theme, setTheme] = useState(systemTheme || "dark");
-  const [isEnabled, setIsEnabled] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(false); // for toggle
 
   useEffect(() => {
     setTheme(systemTheme || "dark");
@@ -52,7 +35,5 @@ const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     </ThemeContext.Provider>
   );
 };
-
-export const useTheme = () => useContext(ThemeContext);
 
 export default ThemeProvider;
